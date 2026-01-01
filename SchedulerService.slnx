@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Scheduler.Application/Scheduler.Application.csproj" />
+  <Project Path="Scheduler.Domain/Scheduler.Domain.csproj" />
+  <Project Path="SchedulerService.UnitTest/SchedulerService.UnitTest.csproj" Id="8ae69855-45a4-415b-97d0-098bae1d9e4a" />
+  <Project Path="SchedulerService/SchedulerService.csproj" />
+</Solution>
