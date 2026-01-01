@@ -6,13 +6,8 @@ namespace Scheduler.Application.Implementacion.Scheduler
 {
     public class ArchivosServices : IArchivosService
     {
-        private readonly int MaxConcurrentExecutions = 10;
-        private readonly SemaphoreSlim _semaphore;
-        private readonly List<Task> _tasks = [];
         public ArchivosServices(IConfiguration configuration)
         {
-            MaxConcurrentExecutions = int.Parse(configuration.GetSection("PerformanceSettings").GetSection("MaxDegreeOfParallelism").Value ?? "10");
-            _semaphore = new SemaphoreSlim(MaxConcurrentExecutions);
         }
         public RegistroTransaccion? ProcesarLinea(string linea)
         {
