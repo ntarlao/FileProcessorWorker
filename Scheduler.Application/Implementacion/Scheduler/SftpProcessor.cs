@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Renci.SshNet;
 using Scheduler.Domain;
+using Scheduler.Infrastructure;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Runtime.ExceptionServices;
@@ -29,7 +30,7 @@ namespace Scheduler.Application.Implementacion.Scheduler
             if (!int.TryParse(portText, out _port))
                 _port = 22;
 
-            // Si se proporciona un factory para abrir streams remotos se usa (útil para tests).
+            // Si se proporciona un factory para abrir streams remotos se usa (para tests).
             // En caso contrario se usa un implementation por defecto que abre con SftpClient.
             _openRemoteStream = openRemoteStream ?? DefaultOpenRemoteStream;
         }
@@ -95,89 +96,16 @@ namespace Scheduler.Application.Implementacion.Scheduler
             }
         }
 
-        private static long GetMemoryLimitBytes()
-        {
-            // Intentar detectar cgroup (Linux containers)
-            try
-            {
-                // cgroup v2
-                const string cgroupV2Path = "/sys/fs/cgroup/memory.max";
-                if (File.Exists(cgroupV2Path))
-                {
-                    var content = File.ReadAllText(cgroupV2Path).Trim();
-                    if (!string.Equals(content, "max", StringComparison.OrdinalIgnoreCase) &&
-                        long.TryParse(content, out var v2Limit))
-                    {
-                        return v2Limit;
-                    }
-                }
-
-                // cgroup v1
-                const string cgroupV1Path = "/sys/fs/cgroup/memory/memory.limit_in_bytes";
-                if (File.Exists(cgroupV1Path))
-                {
-                    var content = File.ReadAllText(cgroupV1Path).Trim();
-                    if (long.TryParse(content, out var v1Limit))
-                    {
-                        return v1Limit;
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            // Fallback: usar la estimación del GC
-            try
-            {
-                var available = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
-                if (available > 0) return available;
-            }
-            catch
-            {
-            }
-
-            // Último recurso: usar WorkingSet como aproximación
-            try
-            {
-                return Environment.WorkingSet;
-            }
-            catch
-            {
-                // fallback a 512MB si todo falla
-                return 512L * 1024 * 1024;
-            }
-        }
-
-        private static long CalculateReservedMemoryBytes(long totalMemoryBytes, double reserveFraction = 0.40, long minBytes = 50L * 1024 * 1024, long maxBytes = long.MaxValue)
-        {
-            var reserved = (long)(totalMemoryBytes * reserveFraction);
-
-            // límites sensatos: no menos de minBytes y no más de maxBytes
-            if (reserved < minBytes) reserved = minBytes;
-            if (maxBytes > 0 && reserved > maxBytes) reserved = maxBytes;
-
-            return reserved;
-        }
-        private int CalculateChannelCapacity(int avgChars, long reservedMemoryBytes = 200L * 1024 * 1024)
-        {
-            const int overhead = 72;
-            long estimatedBytesPerLine = (long)2 * avgChars + overhead;
-            if (estimatedBytesPerLine <= 0) return 1000;
-            long cap = reservedMemoryBytes / estimatedBytesPerLine;
-            int minCap = 200;
-            int maxCap = 50_000;
-            return (int)Math.Clamp(cap, minCap, maxCap);
-        }
+       
 
         public async Task<List<RegistroTransaccion>> LeerArchivoAsync(string remoteFilePath, CancellationToken cancellationToken = default)
         {
             var registrosValidos = new ConcurrentBag<RegistroTransaccion>();
-            var total = GetMemoryLimitBytes();
-            var reservedMemoryBytes = CalculateReservedMemoryBytes(total, reserveFraction: 0.40);
-            // Estimación conservadora de chars por línea
+            var total = MemoryScanner.GetMemoryLimitBytes();
+            var reservedMemoryBytes = MemoryScanner.CalculateReservedMemoryBytes(total, reserveFraction: 0.40);
+            // Estimación de chars por línea
             int avgChars = 2000;
-            var channelCapacity = CalculateChannelCapacity(avgChars, reservedMemoryBytes);
+            var channelCapacity = MemoryScanner.CalculateChannelCapacity(avgChars, reservedMemoryBytes);
 
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var ctsToken = linkedCts.Token;
@@ -191,8 +119,8 @@ namespace Scheduler.Application.Implementacion.Scheduler
                 SingleReader = false,
                 FullMode = BoundedChannelFullMode.Wait
             });
-
-            var degreeOfParallelism = Math.Max(1, Environment.ProcessorCount);
+            var processorCount = MemoryScanner.GetProcessorCount();
+            var degreeOfParallelism = MemoryScanner.GetMaxDegreeOfParallelism();
             var consumers = new List<Task>(degreeOfParallelism);
             for (int i = 0; i < degreeOfParallelism; i++)
             {
@@ -202,7 +130,6 @@ namespace Scheduler.Application.Implementacion.Scheduler
                     {
                         await foreach (var linea in channel.Reader.ReadAllAsync(ctsToken))
                         {
-                            // Si ya se canceló, salir
                             if (ctsToken.IsCancellationRequested) break;
 
                             var registro = _archivosService.ProcesarLinea(linea);

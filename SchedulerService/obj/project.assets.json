@@ -691,7 +691,8 @@
           "Microsoft.Extensions.Logging": "8.0.1",
           "RabbitMQ.Client": "6.8.1",
           "SSH.NET": "2025.1.0",
-          "Scheduler.Domain": "1.0.0"
+          "Scheduler.Domain": "1.0.0",
+          "Scheduler.Infrastructure": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Scheduler.Application.dll": {}
@@ -708,6 +709,16 @@
         },
         "runtime": {
           "bin/placeholder/Scheduler.Domain.dll": {}
+        }
+      },
+      "Scheduler.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Scheduler.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Scheduler.Infrastructure.dll": {}
         }
       }
     }
@@ -1841,6 +1852,11 @@
       "type": "project",
       "path": "../Scheduler.Domain/Scheduler.Domain.csproj",
       "msbuildProject": "../Scheduler.Domain/Scheduler.Domain.csproj"
+    },
+    "Scheduler.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../Scheduler.Infrastructure/Scheduler.Infrastructure.csproj",
+      "msbuildProject": "../Scheduler.Infrastructure/Scheduler.Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {

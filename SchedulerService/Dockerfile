@@ -11,6 +11,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["SchedulerService/SchedulerService.csproj", "SchedulerService/"]
+COPY ["Scheduler.Application/Scheduler.Application.csproj", "Scheduler.Application/"]
+COPY ["Scheduler.Domain/Scheduler.Domain.csproj", "Scheduler.Domain/"]
+COPY ["Scheduler.Infrastructure/Scheduler.Infrastructure.csproj", "Scheduler.Infrastructure/"]
 RUN dotnet restore "./SchedulerService/SchedulerService.csproj"
 COPY . .
 WORKDIR "/src/SchedulerService"

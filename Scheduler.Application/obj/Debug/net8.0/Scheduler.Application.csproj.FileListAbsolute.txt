@@ -25,3 +25,4 @@ C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Application\obj\Debu
 C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Application\obj\Debug\net8.0\refint\Scheduler.Application.dll
 C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Application\obj\Debug\net8.0\Scheduler.Application.pdb
 C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Application\obj\Debug\net8.0\ref\Scheduler.Application.dll
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Application\obj\Debug\net8.0\Scheduler.Application.sourcelink.json

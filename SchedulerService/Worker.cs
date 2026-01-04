@@ -7,13 +7,11 @@ namespace SchedulerService
     {
         private readonly ILogger<Worker> _logger;
         private readonly IRabbitMqSubscriber _subscriber;
-        private readonly IProcessFilesService _processService;
         private readonly ISftpProcessor _sftpProcessor;
-        public Worker(ILogger<Worker> logger, IRabbitMqSubscriber subscriber, IProcessFilesService processService, ISftpProcessor sftpProcessor)
+        public Worker(ILogger<Worker> logger, IRabbitMqSubscriber subscriber, ISftpProcessor sftpProcessor)
         {
             _logger = logger;
             _subscriber = subscriber;
-            _processService = processService;
             _sftpProcessor = sftpProcessor;
         }
 
