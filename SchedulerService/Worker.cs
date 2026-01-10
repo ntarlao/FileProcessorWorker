@@ -1,5 +1,6 @@
 using Scheduler.Application.Implementacion.Rabbit;
 using Scheduler.Application.Implementacion.Scheduler;
+using Scheduler.Application.Hubs.Interfaces;
 
 namespace SchedulerService
 {
@@ -7,17 +8,20 @@ namespace SchedulerService
     {
         private readonly ILogger<Worker> _logger;
         private readonly IRabbitMqSubscriber _subscriber;
-        private readonly ISftpProcessor _sftpProcessor;
-        public Worker(ILogger<Worker> logger, IRabbitMqSubscriber subscriber, ISftpProcessor sftpProcessor)
+        private readonly ISftpFileProcessor _sftpProcessor;
+        private readonly IErrorNotifier _notifier;
+
+        public Worker(ILogger<Worker> logger, IRabbitMqSubscriber subscriber, ISftpFileProcessor sftpProcessor, IErrorNotifier notifier)
         {
             _logger = logger;
             _subscriber = subscriber;
             _sftpProcessor = sftpProcessor;
+            _notifier = notifier;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-           
+
             try
             {
                 await _subscriber.StartAsync(HandleMessageAsync, stoppingToken).ConfigureAwait(false);
@@ -45,11 +49,27 @@ namespace SchedulerService
                     _logger.LogError("No se puede deserializar el mensaje: {Message}", message);
                     return;
                 }
-                _logger.LogInformation("Procesando mensaje: {Message}", message);
-                //await _processService.ProcessMessageAsync(request, CancellationToken.None);
-                if (!string.IsNullOrEmpty(request.Path)) { 
-                    var registros_validos = await _sftpProcessor.LeerArchivoAsync(request.Path, CancellationToken.None);
 
+                _logger.LogInformation("Procesando mensaje: {Message}", message);
+
+                var connectionId = request.ConnectionId;
+
+                //await _notifier.NotifyInfoAsync("Procesamiento iniciado", new { path = request.Path }, connectionId).ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(request.Path))
+                {
+                    try
+                    {
+                        var registros_validos = await _sftpProcessor.LeerArchivoAsync(request.Path!, connectionId, CancellationToken.None).ConfigureAwait(false);
+
+                        //await _notifier.NotifyInfoAsync("Procesamiento finalizado", new { path = request.Path, registros = registros_validos.Count }, connectionId).ConfigureAwait(false);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error procesando archivo: {Path}", request.Path);
+                        //await _notifier.NotifyErrorAsync("Error procesando archivo", new { path = request.Path, exception = ex.ToString() }, connectionId).ConfigureAwait(false);
+                    }
                 }
             }
             catch

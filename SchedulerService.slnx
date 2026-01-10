@@ -4,4 +4,5 @@
   <Project Path="Scheduler.Infrastructure/Scheduler.Infrastructure.csproj" Id="05e03dc1-c970-436d-9025-92a92e9f6139" />
   <Project Path="SchedulerService.UnitTest/SchedulerService.UnitTest.csproj" Id="8ae69855-45a4-415b-97d0-098bae1d9e4a" />
   <Project Path="SchedulerService/SchedulerService.csproj" />
+  <Project Path="WebAppServer/WebAppServer.csproj" Id="d20c279a-5c42-420e-b185-fe1e9e984d54" />
 </Solution>

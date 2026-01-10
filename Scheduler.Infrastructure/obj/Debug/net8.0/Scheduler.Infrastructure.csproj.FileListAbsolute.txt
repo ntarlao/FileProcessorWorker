@@ -1,0 +1,13 @@
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\bin\Debug\net8.0\Scheduler.Infrastructure.deps.json
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\bin\Debug\net8.0\Scheduler.Infrastructure.dll
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\bin\Debug\net8.0\Scheduler.Infrastructure.pdb
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.AssemblyInfo.cs
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.sourcelink.json
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.dll
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\refint\Scheduler.Infrastructure.dll
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\Scheduler.Infrastructure.pdb
+C:\Users\Nicolas\source\repos\FileProcessorWorker\Scheduler.Infrastructure\obj\Debug\net8.0\ref\Scheduler.Infrastructure.dll

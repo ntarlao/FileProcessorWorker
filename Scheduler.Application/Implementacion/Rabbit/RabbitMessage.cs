@@ -3,6 +3,7 @@
     public record RabbitMessage
     {
         public int Banco { get; init; } = 0;
-        public  string Path { get; init; }
+        public string? Path { get; init; }
+        public string? ConnectionId { get; init; }
     }
 }

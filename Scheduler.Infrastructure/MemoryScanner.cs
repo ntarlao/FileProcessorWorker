@@ -42,7 +42,7 @@
             {
             }
 
-            // Fallback: usar la estimación del GC
+            // Si es windows: usar la estimación del GC
             try
             {
                 var available = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
@@ -59,7 +59,7 @@
             }
             catch
             {
-                // fallback a 512MB si todo falla
+                // memoria estimada a 512MB si todo falla
                 return 512L * 1024 * 1024;
             }
         }

@@ -29,10 +29,12 @@ namespace SchedulerService.UnitTest
 
             // Crear mock de IArchivosService y pasarlo al constructor
             var mockArchivos = new Mock<ArchivosServices>(config);
-            // Aquí se pueden configurar setups si SftpFileProcessor los necesita:
-            // e.g. mockArchivos.Setup(x => x.SomeMethod(It.IsAny<string>())).Returns(...);
 
-            return new SftpFileProcessor(mockArchivos.Object,config , openStream);
+            // Crear mock de IErrorNotifier y pasarlo al constructor
+            var mockErrorNotifier = new Mock<Scheduler.Application.Hubs.Interfaces.IErrorNotifier>();
+
+            // Ajustar el orden de los argumentos según el constructor de SftpFileProcessor
+            return new SftpFileProcessor(mockArchivos.Object, config, mockErrorNotifier.Object, openStream);
         }
 
         [Fact]
